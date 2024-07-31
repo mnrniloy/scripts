@@ -16,34 +16,23 @@ PACKAGES=""
 sudo apt install software-properties-common -y
 sudo apt update
 
-# Install lsb-core packages
-sudo apt install lsb-core -y
-
-LSB_RELEASE="$(lsb_release -d | cut -d ':' -f 2 | sed -e 's/^[[:space:]]*//')"
-
-if [[ ${LSB_RELEASE} =~ "Mint 18" || ${LSB_RELEASE} =~ "Ubuntu 16" ]]; then
-    PACKAGES="${UBUNTU_16_PACKAGES}"
-elif [[ ${LSB_RELEASE} =~ "Ubuntu 20" || ${LSB_RELEASE} =~ "Ubuntu 21" || ${LSB_RELEASE} =~ "Ubuntu 22" || ${LSB_RELEASE} =~ 'Pop!_OS 2' ]]; then
-    PACKAGES="${UBUNTU_20_PACKAGES}"
-elif [[ ${LSB_RELEASE} =~ "Debian GNU/Linux 10" ]]; then
-    PACKAGES="${DEBIAN_10_PACKAGES}"
-elif [[ ${LSB_RELEASE} =~ "Debian GNU/Linux 11" ]]; then
-    PACKAGES="${DEBIAN_11_PACKAGES}"
-fi
-
 sudo DEBIAN_FRONTEND=noninteractive \
     apt install \
     adb autoconf automake axel bc bison build-essential \
     ccache clang cmake curl expat fastboot flex g++ \
     g++-multilib gawk gcc gcc-multilib git git-lfs gnupg gperf \
-    htop imagemagick lib32ncurses5-dev lib32z1-dev libtinfo5 libc6-dev libcap-dev \
-    libexpat1-dev libgmp-dev '^liblz4-.*' '^liblzma.*' libmpc-dev libmpfr-dev libncurses5-dev \
-    libsdl1.2-dev libssl-dev libtool libxml2 libxml2-utils '^lzma.*' lzop \
-    maven ncftp ncurses-dev patch patchelf pkg-config pngcrush \
-    pngquant python2.7 python-all-dev re2c schedtool squashfs-tools subversion \
+    htop imagemagick lib32z1-dev libc6-dev libcap-dev \
+    libexpat1-dev libgmp-dev libmpc-dev libmpfr-dev \
+    libsdl1.2-dev libssl-dev libtool libxml2 libxml2-utils lzop \
+    maven ncftp libncurses-dev patch patchelf pkg-config pngcrush \
+    pngquant re2c schedtool squashfs-tools subversion \
     texinfo unzip w3m xsltproc zip zlib1g-dev lzip \
     libxml-simple-perl libswitch-perl apt-utils rsync \
     ${PACKAGES} -y
+
+echo -e "Installing libncurses5"
+wget http://archive.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.4-2_amd64.deb && sudo dpkg -i libtinfo5_6.4-2_amd64.deb && rm -f libtinfo5_6.4-2_amd64.deb
+wget http://archive.ubuntu.com/ubuntu/pool/universe/n/ncurses/libncurses5_6.4-2_amd64.deb && sudo dpkg -i libncurses5_6.4-2_amd64.deb && rm -f libncurses5_6.4-2_amd64.deb
 
 echo -e "Installing GitHub CLI"
 curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
